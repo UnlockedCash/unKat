@@ -5,11 +5,10 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {UnKatFactory} from "./unKatFactory.sol";
 
 contract UnKat is ERC20 {
-
     uint256 constant BPS = 10_000;
     UnKatFactory immutable factory;
     ERC20 immutable kat;
-    
+
     /// @notice constructor
     /// @param _kat Address of the official kat token
     constructor(address _kat) ERC20("unlocked Kat", "unKat") {
