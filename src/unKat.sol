@@ -2,7 +2,8 @@
 pragma solidity ^0.8.13;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import {UnKatFactory} from "./unKatFactory.sol";
+import {UnKatFactory, Fees} from "./UnKatFactory.sol";
+import {UnKatVault} from "./UnKatVault.sol";
 
 contract UnKat is ERC20 {
     uint256 constant BPS = 10_000;
@@ -22,11 +23,13 @@ contract UnKat is ERC20 {
     function mint(address receiver, uint256 amount) external {
         require(factory.isVault(msg.sender), "onlyVaultCanMint");
 
-        uint256 fee = factory.fee();
-        uint256 feeAmount = amount * fee / BPS;
+        Fees memory fees = factory.getFees();
+        uint256 opsFeeAmount = amount * fees.opsFee / BPS;
+        uint256 referralAmount = amount * fees.referralFee / BPS;
 
-        _mint(receiver, amount - feeAmount);
-        _mint(factory.owner(), feeAmount);
+        _mint(factory.owner(), opsFeeAmount);
+        _mint(UnKatVault(msg.sender).referral(), referralAmount);
+        _mint(receiver, amount - opsFeeAmount - referralAmount);
     }
 
     /// @notice Redeem unKat for kat tokens 1-1, callable by anyone
