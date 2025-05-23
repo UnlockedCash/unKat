@@ -25,11 +25,11 @@ contract UnKat is ERC20 {
 
         Fees memory fees = factory.getFees();
         uint256 opsFeeAmount = amount * fees.opsFee / BPS;
-        uint256 referralAmount = amount * fees.referralFee / BPS;
+        uint256 referralFeeAmount = amount * fees.referralFee / BPS;
 
         _mint(factory.owner(), opsFeeAmount);
-        _mint(UnKatVault(msg.sender).referral(), referralAmount);
-        _mint(receiver, amount - opsFeeAmount - referralAmount);
+        _mint(UnKatVault(msg.sender).referral(), referralFeeAmount);
+        _mint(receiver, amount - opsFeeAmount - referralFeeAmount);
     }
 
     /// @notice Redeem unKat for kat tokens 1-1, callable by anyone
