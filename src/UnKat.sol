@@ -7,8 +7,8 @@ import {UnKatVault} from "./UnKatVault.sol";
 
 contract UnKat is ERC20 {
     uint256 constant BPS = 10_000;
-    UnKatFactory immutable factory;
-    ERC20 immutable kat;
+    UnKatFactory public immutable factory;
+    ERC20 public immutable kat;
 
     /// @notice constructor
     /// @param _kat Address of the official kat token

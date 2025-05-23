@@ -2,6 +2,9 @@
 pragma solidity ^0.8.13;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+import {UnKat} from "./UnKat.sol";
 
 struct Fees {
     uint128 opsFee;
@@ -10,7 +13,10 @@ struct Fees {
 
 contract UnKatFactory is Ownable {
     uint256 constant BPS = 10_000;
-    uint256 constant MAX_TOTAL_FEES = 1500; //15% max
+    uint256 public constant MAX_TOTAL_FEES = 1500; //15% max
+
+    ERC20 public immutable kat;
+    UnKat public immutable unKat;
 
     bool public isEnabled;
     Fees private fees;
@@ -18,7 +24,10 @@ contract UnKatFactory is Ownable {
     mapping(address => address) public userVault;
     mapping(address => bool) public authorizedReferral;
 
-    constructor(uint256 _opsFee, uint256 _referralFee) Ownable(msg.sender) {
+    constructor(address _kat, uint256 _opsFee, uint256 _referralFee) Ownable(msg.sender) {
+        kat = ERC20(_kat);
+        unKat = new UnKat(_kat);
+
         require(_opsFee + _referralFee <= MAX_TOTAL_FEES, "FeesToHigh");
         fees = Fees({opsFee: uint128(_opsFee), referralFee: uint128(_referralFee)});
     }
